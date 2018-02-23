@@ -153,6 +153,18 @@ type PricingModel interface {
 	PodPrice(pod *apiv1.Pod, startTime time.Time, endTime time.Time) (float64, error)
 }
 
+// AWS ASG minNodes and maxNodes specific interfaces
+// Can't us NodeGroup interface unless we also specify the following functions in
+// other cloud providers. They are not needed there. The notion of hard set min and max
+// Nodegroup settings are limited to just AWS ASGs.
+type AwsMinMaxNodeGroup interface {
+	// AdjustMaxSize returns maximum size of the node group.
+	AdjustMaxSize(delta int) error
+
+	// AdjustMinSize returns minimum size of the node group.
+	AdjustMinSize(delta int) error
+}
+
 const (
 	// ResourceNameCores is string name for cores. It's used by ResourceLimiter.
 	ResourceNameCores = "cpu"

@@ -155,6 +155,34 @@ func (asg *Asg) MinSize() int {
 	return asg.minSize
 }
 
+// AdjustMaxSize returns the new maximum size of the node group.
+// Ian - Needs GetAsgMaxSize in aws_manager.go
+// Ian - Needs SetAsgMaxSize in aws_manager.go
+func (asg *Asg) AdjustMaxSize(delta int) error {
+	size, err := asg.awsManager.GetAsgMaxSize(asg)
+	if err != nil {
+		return err
+	}
+	if int(delta)+int(size) < asg.MinSize() {
+		return fmt.Errorf("MaxSize of ASG must not be less than MinSize")
+	}
+	return asg.awsManager.SetAsgMaxSize(asg, size+int64(delta))
+}
+
+// AdjustMinSize returns the new minimum size of the node group.
+// Ian - Needs GetAsgMinSize in aws_manager.go
+// Ian - Needs SetAsgMinSize in aws_manager.go
+func (asg *Asg) AdjustMinSize(delta int) error {
+	size, err := asg.awsManager.GetAsgMinSize(asg)
+	if err != nil {
+		return err
+	}
+	if int(delta)+int(size) > asg.MaxSize() {
+		return fmt.Errorf("MinSize of ASG must not be more than MaxSize")
+	}
+	return asg.awsManager.SetAsgMinSize(asg, size+int64(delta))
+}
+
 // TargetSize returns the current TARGET size of the node group. It is possible that the
 // number is different from the number of nodes registered in Kubernetes.
 func (asg *Asg) TargetSize() (int, error) {

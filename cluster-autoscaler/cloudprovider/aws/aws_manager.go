@@ -295,6 +295,18 @@ func (m *AwsManager) GetAsgSize(asgConfig *Asg) (int64, error) {
 	return *asg.DesiredCapacity, nil
 }
 
+// GetAsgMaxSize gets ASG minsize
+func (m *AwsManager) GetAsgMaxSize(asgConfig *Asg) (int64, error) {
+	// update me
+	return 1, nil
+}
+
+// GetAsgMinSize gets ASG minsize
+func (m *AwsManager) GetAsgMinSize(asgConfig *Asg) (int64, error) {
+	// update me
+	return 1, nil
+}
+
 // SetAsgSize sets ASG size.
 func (m *AwsManager) SetAsgSize(asg *Asg, size int64) error {
 	params := &autoscaling.SetDesiredCapacityInput{
@@ -307,6 +319,16 @@ func (m *AwsManager) SetAsgSize(asg *Asg, size int64) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+// SetAsgMaxSize sets ASG maxsize.
+func (m *AwsManager) SetAsgMaxSize(asg *Asg, size int64) error {
+	return nil
+}
+
+// SetAsgMinSize sets ASG minsize.
+func (m *AwsManager) SetAsgMinSize(asg *Asg, size int64) error {
 	return nil
 }
 
@@ -325,7 +347,7 @@ func (m *AwsManager) DeleteInstances(instances []*AwsRef) error {
 			return err
 		}
 		if asg != commonAsg {
-			return fmt.Errorf("Connot delete instances which don't belong to the same ASG.")
+			return fmt.Errorf("cannot delete instances which don't belong to the same ASG")
 		}
 	}
 
